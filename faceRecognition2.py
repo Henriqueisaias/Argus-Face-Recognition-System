@@ -1,114 +1,80 @@
 import cv2
-import face_recognition
+import mediapipe as mp
 import numpy as np
-import gridfs
-from pymongo import MongoClient
-from bson import ObjectId
 
-# Conectar ao MongoDB
-client = MongoClient("mongodb://localhost:27017/")
-db = client["faces"]
-fs = gridfs.GridFS(db)
-collection = db["wanted"]
+# Inicializar MediaPipe FaceMesh
+mp_face_mesh = mp.solutions.face_mesh
+face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1, min_detection_confidence=0.7)
+face_mesh_realtime = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, min_detection_confidence=0.7)
 
-def obter_codificacao_referencia(object_id):
-    try:
-        # Recuperar imagem do GridFS
-        imagem_binaria = fs.get(ObjectId(object_id)).read()
-        imagem = np.frombuffer(imagem_binaria, dtype=np.uint8)
-        imagem = cv2.imdecode(imagem, cv2.IMREAD_COLOR)
+# Função para extrair landmarks faciais da imagem
+def extrair_landmarks(imagem, modo_realtime=False):
+    if modo_realtime:
+        resultado = face_mesh_realtime.process(cv2.cvtColor(imagem, cv2.COLOR_BGR2RGB))
+    else:
+        resultado = face_mesh.process(cv2.cvtColor(imagem, cv2.COLOR_BGR2RGB))
+    if resultado.multi_face_landmarks:
+        return resultado.multi_face_landmarks[0]
+    return None
 
-        # Converter imagem de BGR para RGB
-        imagem_rgb = cv2.cvtColor(imagem, cv2.COLOR_BGR2RGB)
+# Função para calcular a distância euclidiana entre dois conjuntos de landmarks
+def calcular_distancia(landmarks1, landmarks2):
+    if landmarks1 is None or landmarks2 is None:
+        return float('inf')  # Retorna uma distância infinita se não houver landmarks
+    soma_distancias = 0
+    for p1, p2 in zip(landmarks1.landmark, landmarks2.landmark):
+        soma_distancias += np.linalg.norm(np.array([p1.x, p1.y]) - np.array([p2.x, p2.y]))
+    return soma_distancias / len(landmarks1.landmark)
 
-        # Obter codificação do rosto
-        codificacao = face_recognition.face_encodings(imagem_rgb)
-        if len(codificacao) > 0:
-            return codificacao[0], imagem
-        else:
-            raise ValueError("Nenhum rosto encontrado na imagem de referência.")
-    except Exception as e:
-        print(f"Erro ao obter codificação de referência: {e}")
-        return None, None
-
-def buscar_individuo_no_mongodb():
-    return list(collection.find({}))
-
-def calcular_semelhanca(codificacao_referencia, codificacao_face):
-    distancia = face_recognition.face_distance([codificacao_referencia], codificacao_face)[0]
-    percentual_semelhanca = (1 - distancia) * 100  # Convertendo a distância em porcentagem de semelhança
-    return percentual_semelhanca
+# Carregar a imagem de referência e extrair landmarks
+imagem_referencia = cv2.imread('minha_foto.jpg')
+landmarks_referencia = extrair_landmarks(imagem_referencia)
 
 def main():
+    # Iniciar a captura de vídeo da webcam
     video_capture = cv2.VideoCapture(0)
 
     if not video_capture.isOpened():
         print("Não foi possível abrir a webcam.")
         return
 
-    # Definir a resolução da webcam
-    video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-    # Buscar todos os indivíduos no MongoDB e carregar suas codificações
-    individuos = buscar_individuo_no_mongodb()
-    codificacoes_referencia = []
-    dados_individuos = []
-
-    for individuo in individuos:
-        try:
-            codificacao, imagem_referencia = obter_codificacao_referencia(individuo["foto"])
-            if codificacao is not None:
-                codificacoes_referencia.append(codificacao)
-                dados_individuos.append(individuo)
-
-                # Mostrar a imagem da URL
-                if imagem_referencia is not None:
-                    cv2.imshow(f'Imagem de {individuo["nome"]}', imagem_referencia)
-        except Exception as e:
-            print(f"Erro ao processar {individuo['nome']}: {str(e)}")
-
     while True:
+        # Capturar um frame da webcam
         ret, frame = video_capture.read()
         if not ret:
             print("Falha ao capturar imagem.")
             break
 
-        # Verificar se o frame não é None
-        if frame is not None:
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            faces_localizadas = face_recognition.face_locations(rgb_frame)
-            codificacoes_faces = face_recognition.face_encodings(rgb_frame, faces_localizadas)
+        # Extrair landmarks do rosto no frame atual
+        landmarks_frame = extrair_landmarks(frame, modo_realtime=True)
 
-            for (top, right, bottom, left), codificacao_face in zip(faces_localizadas, codificacoes_faces):
-                if codificacoes_referencia:
-                    # Compare face with reference encodings
-                    distancias = face_recognition.face_distance(codificacoes_referencia, codificacao_face)
-                    resultados = distancias <= 0.6
+        # Calcular a distância entre os landmarks da imagem de referência e do frame atual
+        distancia = calcular_distancia(landmarks_referencia, landmarks_frame)
 
-                    if np.any(resultados):
-                        match_index = np.argmin(distancias)
-                        individuo_correspondente = dados_individuos[match_index]
-                        percentual_semelhanca = calcular_semelhanca(codificacoes_referencia[match_index], codificacao_face)
-                        print(f"Rosto reconhecido: {individuo_correspondente['nome']}, Idade: {individuo_correspondente['idade']}, Crimes: {individuo_correspondente['crimes']}")
-                        print(f"Percentual de semelhança: {percentual_semelhanca:.2f}%")
-                        texto = f"Rosto de {individuo_correspondente['nome']}!"
-                    else:
-                        texto = "Rosto desconhecido!"
-                else:
-                    texto = "Nenhuma referência encontrada."
-
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-                cv2.putText(frame, texto, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-
-            cv2.imshow('Video', frame)
-
+        # Definir um limiar de distância para considerar se os rostos são semelhantes
+        tolerancia = 0.1  # Ajuste o valor conforme necessário
+        if distancia < tolerancia:
+            texto = f"Rosto correspondente! Distância: {distancia:.4f}"
+            print("Rosto reconhecido no terminal! Distância:", distancia)
         else:
-            print("O frame está vazio.")
+            texto = "Rosto não correspondente."
+            print("Rosto não reconhecido no terminal.")
 
+        # Exibir a mensagem e os landmarks no frame
+        if landmarks_frame:
+            for landmark in landmarks_frame.landmark:
+                x = int(landmark.x * frame.shape[1])
+                y = int(landmark.y * frame.shape[0])
+                cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
+
+        cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        cv2.imshow('Video', frame)
+
+        # Pressione 'q' para sair
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+    # Liberar a câmera e fechar janelas
     video_capture.release()
     cv2.destroyAllWindows()
 
