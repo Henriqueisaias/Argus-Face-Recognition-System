@@ -4,9 +4,10 @@ const wantedSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     age: { type: Number, required: true },
-    crime: { type: String, required: true },
+    crimes: { type: String, required: true },
     seen: { type: Date, required: true },
     location: { type: String },
+    photo: {type: String}
   },
   { timestamps: true }
 );
