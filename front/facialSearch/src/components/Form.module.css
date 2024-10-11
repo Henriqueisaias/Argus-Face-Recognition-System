@@ -1,0 +1,14 @@
+.main {
+    color: black;
+    background-color: white;
+    border-radius: 5px;
+    min-height: 200px;
+    min-width: 500px;
+    padding: 10px;
+}
+
+.form button{
+    background-color: rgb(8, 106, 218);
+    width: 400px;
+    cursor: pointer;
+}
