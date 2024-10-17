@@ -1,14 +1,80 @@
-.main {
-    color: black;
-    background-color: white;
-    border-radius: 5px;
-    min-height: 200px;
-    min-width: 500px;
-    padding: 10px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.form button{
-    background-color: rgb(8, 106, 218);
-    width: 400px;
-    cursor: pointer;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background-color: white;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+h1 {
+  color: #4a90e2;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.file-upload {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-upload label {
+  cursor: pointer;
+  width: 100%; /* Para que o botão ocupe toda a largura disponível */
+}
+
+.button {
+  background-color: #4a90e2;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+  display: inline-block;
+  width: 100%; /* Para que o botão ocupe toda a largura disponível */
+}
+
+.button:hover {
+  background-color: #357ab8;
+}
+
+.results {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #e8f0fe;
+  border-radius: 5px;
+  text-align: left;
+  width: 100%; /* Ocupa toda a largura do contêiner */
+}
+
+.results h2 {
+  color: #4a90e2;
+  margin-bottom: 10px;
+  font-size: 20px; /* Tamanho do texto para melhor legibilidade */
+}
+
+.results p {
+  font-size: 16px;
+  margin: 5px 0;
 }
