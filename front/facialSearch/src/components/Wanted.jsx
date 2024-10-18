@@ -1,26 +1,33 @@
-function Wanted({ wanted }) { // Use destructuring para acessar a prop 'wanted'
+import React, { useEffect } from 'react';
 
-    const wantedGet = {
-        nome: "zezin",
-        idade: 20,
-        crime: "ladrão",
-        foto: "https://files.agro20.com.br/uploads/2019/09/maracuja-2-1024x576.jpg"
-    };
+function Wanted({ wanted }) {
+    // useEffect para monitorar as alterações nos dados recebidos
+    useEffect(() => {
+        console.log('Dados recebidos no componente Wanted:', wanted);
+    }, [wanted]);
+
+    // Se não houver dados ou o array estiver vazio, exiba uma mensagem
+    if (!wanted || wanted.length === 0) {
+        return (
+            <div>
+                <h3>Nenhum resultado encontrado</h3>
+            </div>
+        );
+    }
+
+    // Renderiza apenas o primeiro item do array 'wanted'
+    const item = wanted; // Pega o primeiro item do array
 
     return (
-        <div>
-            {!wanted ? ( // Verifique se 'wanted' é falso
-                <div>
-                    <h3>Nenhum resultado encontrado</h3>
-                </div>
-            ) : ( // Se 'wanted' é verdadeiro, renderize os dados
-                <div>
-                    <h3>{wantedGet.nome}</h3>
-                    <p>Idade: {wantedGet.idade}</p>
-                    <p>Crime: {wantedGet.crime}</p>
-                    <img src={wantedGet.foto} alt={wantedGet.nome} />
-                </div>
-            )}
+        <div style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '5px', padding: '10px' }}>
+            <h3>{item.nome}</h3> {/* Mostrando o nome da pessoa */}
+            <p>Idade: {item.idade}</p> {/* Mostrando a idade */}
+            <p>Crimes: {item.crimes.join(', ')}</p> {/* Mostrando os crimes */}
+            
+                <img 
+                    src={item.photo} 
+                />
+        
         </div>
     );
 }
