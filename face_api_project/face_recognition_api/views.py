@@ -52,6 +52,7 @@ class FaceRecognitionAPIView(APIView):
             if distancias[melhor_correspondencia] < 0.6:
                 individuo_correspondente = dados_individuos[melhor_correspondencia]
                 return Response({
+                    "id": str(individuo_correspondente['_id']),
                     "nome": individuo_correspondente['nome'],
                     "idade": individuo_correspondente['idade'],
                     "crimes": individuo_correspondente['crimes']
