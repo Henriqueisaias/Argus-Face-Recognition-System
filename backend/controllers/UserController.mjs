@@ -1,12 +1,15 @@
 import { User } from "../models/User.mjs";
 import { connect } from "../db/conn.mjs";
 
+const db = await connect();
+
 export default class UserController {
   static async register(req, res) {
-    const { user, password, confirmpassword, permission } = req.body;
-    // validações
 
-    // se os dados vieram
+    const { user, string, password, confirmpassword, permission } = req.body;
+    
+
+    
     if (!user) {
       res.status(422).json({ message: "O nome de usuário é obrigatorio" });
       return;
@@ -36,7 +39,6 @@ export default class UserController {
     }
 
 
-
     // ver se as variaveis estão cheias
     console.log("Usuário:", user);
     console.log("Senha:", password);
@@ -44,8 +46,7 @@ export default class UserController {
     console.log("Permissão:", permission);
 
     // checar se o usuário existe
-    const db = await connect();
-    const userExists = await db.collection("users").findOne({ user: user });
+  const userExists = await db.collection("users").findOne({ user: user });
 
     if (userExists) {
       res.status(422).json({
@@ -66,10 +67,43 @@ export default class UserController {
           permission: permission,
           confirmpassword: confirmpassword,
         });
+        
       console.log("inserido com sucesso no banco");
       res.send("inserido no banco com sucesso");
     } catch (err) {
       console.log(err);
     }
+  }
+
+  static async login (req, res) {
+    // aqui vai o login e o envio do token
+  }
+
+  static async updateUser (req, res) {
+    // aqui vai o update de user
+  }
+
+  static async deleteUser (req, res) {
+    const id = req.params.id
+    console.log("rota delete acessada")
+
+    try{
+    db.collection("users").deleteOne({_id: id});
+    res.send("deletado");
+    }catch(err){
+        console.log("erro" + err)
+    }
+    
+
+  }
+
+  static async getAllUsers (req, res) {
+    
+    
+    console.log("rota acessada");
+    const allUsers = await db.collection("users").find().toArray();
+    res.send(allUsers);
+
+    
   }
 }
