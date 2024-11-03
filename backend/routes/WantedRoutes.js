@@ -5,11 +5,11 @@ const router = Router();
 
 const upload = multer();
 // ta dando algum erro aqui dps vou arrumar
-router.post("/getone", (req, res) => {
+router.post("/getOne", (req, res) => {
     res.send("rota de busca funcionado")
 })
 
-router.get("/getall", WantedController.getAll)
+router.get("/getAll", WantedController.getAll)
 
 router.post("/search", upload.single("image"), WantedController.search);
 export default router;

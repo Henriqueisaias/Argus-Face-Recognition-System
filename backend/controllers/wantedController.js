@@ -35,7 +35,7 @@ export default class WantedController {
 
       const results = await Promise.all(
         allWanted.map(async (wanted) => {
-          const imgId = wanted.foto;
+          const imgId = wanted.photo;
 
           const imageBuffer = await db
 
@@ -145,13 +145,13 @@ export default class WantedController {
   }
 
   static async getOne(req, res) {
-    const { name, age, crimes, seen, location, photo } = req.body;
+    const { name, age, crimes, condemned, wanted, photo } = req.body;
 
-    if (!name && !age && !crimes && !seen && !location && !photo) {
+    if (!name && !age && !crimes && !condemned && !wanted && !photo) {
       return res.send({ message: "Erro nenhum dado preenchido" });
     }
 
-    const wantedGetOne = { name, age, crimes, seen, location, photo };
+    const wantedGetOne = { name, age, crimes, condemned, wanted, photo };
 
     try {
       const result = await Wanted.findOne({ ...wantedGetOne });
