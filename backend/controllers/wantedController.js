@@ -1,5 +1,5 @@
-import { Wanted } from "../models/Wanted.mjs";
-import { connect } from "../db/conn.mjs";
+import { Wanted } from "../models/Wanted.js";
+import { connect } from "../db/conn.js";
 import { ObjectId } from "mongodb";
 import sharp from "sharp";
 import axios from "axios";

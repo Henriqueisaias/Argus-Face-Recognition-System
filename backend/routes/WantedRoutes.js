@@ -1,5 +1,5 @@
 import {Router} from "express";
-import WantedController from "../controllers/wantedController.mjs";
+import WantedController from "../controllers/wantedController.js";
 import multer from "multer";
 const router = Router();
 

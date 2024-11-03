@@ -1,5 +1,5 @@
-import { User } from "../models/User.mjs";
-import { connect } from "../db/conn.mjs";
+import { User } from "../models/User.js";
+import { connect } from "../db/conn.js";
 
 const db = await connect();
 
