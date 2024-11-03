@@ -30,12 +30,12 @@ def inserir_dados():
 
        
         documento = {
-            "nome": nome,
-            "idade": int(idade),
+            "name": nome,
+            "age": int(idade),
             "crimes": [crime.strip() for crime in crimes],
-            "foto": ObjectId(imagem_id), 
-            "condenado_em": condenado_em, 
-            "foragido": foragido 
+            "photo": ObjectId(imagem_id), 
+            "condemned": condenado_em, 
+            "wanted": foragido 
         }
 
      
