@@ -24,46 +24,45 @@ export default class WantedController {
       return res.status(422).json({ message: "A foto é obrigatória" });
     }
 
-
     res.status(201).json({ message: "Registro criado com sucesso!" });
   }
 
   static async getAll(req, res) {
     try {
-      const allWanted = await db.collection("wanted").find().toArray();
+      const allWanted = await Wanted.find();
+
+      // depois mexer nisso daqui pra ficar mais limpo
 
       const results = await Promise.all(
         allWanted.map(async (wanted) => {
-          const imgId = wanted.foto; 
+          const imgId = wanted.foto;
 
-   
           const imageBuffer = await db
+
             .collection("fs.files")
             .findOne({ _id: imgId });
+
           const imgData = await db
+
             .collection("fs.chunks")
             .find({ files_id: imgId })
             .toArray();
 
-          
           if (!imgData.length) {
-            return { ...wanted, photo: null }; 
+            return { ...wanted, photo: null };
           }
 
-         
           const imageChunks = imgData.map((chunk) => chunk.data.buffer);
           const fullImageBuffer = Buffer.concat(imageChunks);
 
-         
           const resizedImageBuffer = await sharp(fullImageBuffer)
-            .resize(200) 
+            .resize(200)
             .toBuffer();
 
-         
           const base64Image = resizedImageBuffer.toString("base64");
           const imgSrc = `data:image/jpeg;base64,${base64Image}`;
 
-          return { ...wanted, photo: imgSrc }; 
+          return { ...wanted, photo: imgSrc };
         })
       );
 
@@ -76,49 +75,50 @@ export default class WantedController {
 
   static async search(req, res) {
     try {
-     
       const image = req.file;
 
-      if(image){
-        console.log("veio")
-      }else{
-        console.log("não veio")
+      if (image) {
+        console.log("veio");
+      } else {
+        console.log("não veio");
       }
 
-      
       if (!image) {
-        return res.status(400).send({ message: 'Imagem não enviada' });
+        return res.status(400).send({ message: "Imagem não enviada" });
       }
 
-      
       const form = new FormData();
       form.append("image", image.buffer, {
         filename: image.originalname,
         contentType: image.mimetype,
       });
 
+      const response = await axios.post(
+        "http://localhost:8000/api/recognize/",
+        form,
+        {
+          headers: form.getHeaders(),
+        }
+      );
 
+      const id = response.data;
+      console.log(id);
 
-      const response = await axios.post("http://localhost:8000/api/recognize/", form, {
-        headers: form.getHeaders(), 
-      });
-
-      const id  = response.data;
-      console.log(id)
-      
       if (id !== -1) {
-       
-        const target = await db.collection('wanted').findOne({ _id: new ObjectId(id) });
+        const target = await db
+          .collection("wanted")
+          .findOne({ _id: new ObjectId(id) });
 
         if (!target) {
           return res.status(404).send([]);
         }
 
-       
         const imgId = target.foto;
 
-       
-        const imgData = await db.collection('fs.chunks').find({ files_id: new ObjectId(imgId) }).toArray();
+        const imgData = await db
+          .collection("fs.chunks")
+          .find({ files_id: new ObjectId(imgId) })
+          .toArray();
 
         if (!imgData.length) {
           return res.send({ ...target, photo: null });
@@ -127,21 +127,17 @@ export default class WantedController {
         const imageChunks = imgData.map((chunk) => chunk.data.buffer);
         const fullImageBuffer = Buffer.concat(imageChunks);
 
-       
         const resizedImageBuffer = await sharp(fullImageBuffer)
-          .resize(200) 
+          .resize(200)
           .toBuffer();
 
-        
-        const base64Image = resizedImageBuffer.toString('base64');
-        console.log(base64Image)
+        const base64Image = resizedImageBuffer.toString("base64");
+        console.log(base64Image);
         const imgSrc = `data:image/jpeg;base64,${base64Image}`;
 
-      
         res.send({ ...target, photo: imgSrc });
       } else {
-       
-        res.send({ message: 'Nenhum resultado satisfatório' });
+        res.send({ message: "Nenhum resultado satisfatório" });
       }
     } catch (err) {
       res.status(500).send({ message: `Erro inesperado: ${err.message}` });
@@ -149,6 +145,25 @@ export default class WantedController {
   }
 
   static async getOne(req, res) {
-    // aqui eu recebo os dados e faço um select
+    const { name, age, crimes, seen, location, photo } = req.body;
+
+    if (!name && !age && !crimes && !seen && !location && !photo) {
+      return res.send({ message: "Erro nenhum dado preenchido" });
+    }
+
+    const wantedGetOne = { name, age, crimes, seen, location, photo };
+
+    try {
+      const result = await Wanted.findOne({ ...wantedGetOne });
+
+      if (!result) {
+        res.send({ message: "nenhum resultado encontrado" });
+      } else {
+        res.send(result);
+      }
+    } catch (err) {
+      res.status(500).send({ message: `Ocorreu um erro no servidor: ${err}` });
+      console.log(err);
+    }
   }
 }
