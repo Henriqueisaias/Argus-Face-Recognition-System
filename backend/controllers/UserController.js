@@ -46,7 +46,7 @@ export default class UserController {
     console.log("Permissão:", permission);
 
     // checar se o usuário existe
-  const userExists = await db.collection("users").findOne({ user: user });
+  const userExists = await User.findOne({ user: user });
 
     if (userExists) {
       res.status(422).json({
@@ -88,7 +88,7 @@ export default class UserController {
     console.log("rota delete acessada")
 
     try{
-    db.collection("users").deleteOne({_id: id});
+    User.deleteOne({_id: id});
     res.send("deletado");
     }catch(err){
         console.log("erro" + err)
@@ -101,7 +101,7 @@ export default class UserController {
     
     
     console.log("rota acessada");
-    const allUsers = await db.collection("users").find().toArray();
+    const allUsers = await User.find().toArray();
     res.send(allUsers);
 
     
