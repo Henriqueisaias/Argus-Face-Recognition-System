@@ -1,35 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+import styles from "./Wanted.module.css";
 
 function Wanted({ wanted }) {
-    // useEffect para monitorar as alterações nos dados recebidos
-    useEffect(() => {
-        console.log('Dados recebidos no componente Wanted:', wanted);
-    }, [wanted]);
+  useEffect(() => {
+    console.log("Dados recebidos no componente Wanted:", wanted);
+  }, [wanted]);
 
-    // Se não houver dados ou o array estiver vazio, exiba uma mensagem
-    if (!wanted || wanted.length === 0) {
-        return (
-            <div>
-                <h3>Nenhum resultado encontrado</h3>
-            </div>
-        );
-    }
 
-    // Renderiza apenas o primeiro item do array 'wanted'
-    const item = wanted; // Pega o primeiro item do array
+  return (
+    <>
+    {wanted.nome && (<div className={styles.container}
+      style={{
+        marginBottom: "20px",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        padding: "10px",
+      }}
+    >
+      <div className={styles.resultimg}><img src={wanted.photo} /></div>
+      <h3>{wanted.nome}</h3>
+      <div className="data">
+          <p>Idade: {wanted.idade}</p>
+          <p>Crimes: {wanted.crimes.join(", ")}</p> 
+      </div>
+    </div>)}
 
-    return (
-        <div style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '5px', padding: '10px' }}>
-            <h3>{item.nome}</h3> {/* Mostrando o nome da pessoa */}
-            <p>Idade: {item.idade}</p> {/* Mostrando a idade */}
-            <p>Crimes: {item.crimes.join(', ')}</p> {/* Mostrando os crimes */}
-            
-                <img 
-                    src={item.photo} 
-                />
-        
-        </div>
-    );
+    {wanted.message && (<div className={styles.container}
+      style={{
+        marginBottom: "20px",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        padding: "10px",
+      }}
+    >
+        <h2>{wanted.message}</h2>
+    </div>)}
+
+    </>);
 }
+
 
 export default Wanted;

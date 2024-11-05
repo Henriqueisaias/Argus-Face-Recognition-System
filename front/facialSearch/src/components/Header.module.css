@@ -1,0 +1,15 @@
+header h2 {
+    color:dimgrey;
+    font-size: 2em;
+}
+
+header {
+    border-bottom : 1px solid rgba(0, 0, 0, 0.295);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+

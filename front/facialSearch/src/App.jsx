@@ -1,12 +1,14 @@
 import Form from './components/Form.jsx'
 import './App.css'
+import Header from './components/Header.jsx'
 
 function App() {
 
   return (
-    <>
-      <Form/>
-    </>
+    <main>
+      <Header/>
+      <div ><Form/></div>
+    </main>
   )
 }
 
