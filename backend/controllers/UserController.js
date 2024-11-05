@@ -58,10 +58,9 @@ export default class UserController {
     // criação da senha criptografada
     // const salt = await bcrypt.gens;
 
-    // const db = await connect();
 
     try {
-      await db.collection("users").insertOne({
+      await User.insertOne({
           user: user,
           password: password,
           permission: permission,
