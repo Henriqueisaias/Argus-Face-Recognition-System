@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Form.module.css";
 import Wanted from "./Wanted";
 import axios from "axios";
@@ -23,7 +23,7 @@ async function req(image) {
     return response.data; 
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
-    return [];
+    return {erro: error}
   }
 }
 
@@ -75,15 +75,27 @@ function Form() {
           <img
             src={URL.createObjectURL(image)}
             alt={imageName}
-            style={{ maxHeight: "300px", borderRadius: "15px" }}
+            style={{ maxHeight: "300px", borderRadius: "15px", marginBottom: "20px"  }}
           />
           <p>{imageName}</p>
+        </div>
+      )}
+
+      {loading && (
+        <div className={styles.loadingcontainer}>
+        <div className={styles.loading}><h2>Fazendo reconhecimento...</h2></div>
+        <div className={styles.spinner}></div>
         </div>
       )}
 
       {wanted && (
         <div className={styles.results}>
           <h2>Resultados do Reconhecimento</h2>
+          {wanted.erro && (
+            <div>
+              <h2>Ocorreu um erro inesperado: {wanted.erro.message}</h2>
+            </div>
+          )}
           <Wanted wanted={wanted} />
         </div>
       )}
