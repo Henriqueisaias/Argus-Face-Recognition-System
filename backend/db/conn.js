@@ -1,16 +1,16 @@
-import { MongoClient } from "mongodb";
+import mongoose from 'mongoose';
 
-const uri = "mongodb://localhost:27017";
+const connect = async () => {
+  try {
+   
+    await mongoose.connect('mongodb://localhost:27017/faces', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Conexão feita com sucesso");
+  } catch (err) {
+    console.log(`Erro ao conectar: ${err}`);
+  }
+};
 
-const client = new MongoClient(uri);
-
-async function connect() {
-    try{
-        await client.connect();
-        console.log("conexão feita com sucesso");
-        const db = client.db("faces");
-        return db;
-    }catch(err){console.log(`erro ao conectar${err}`)}
-}
-
-export {connect, client}
+export { connect };
