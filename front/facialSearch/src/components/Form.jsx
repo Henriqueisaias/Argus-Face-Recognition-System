@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Form.module.css";
 import Wanted from "./Wanted";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-async function req(image) {
+async function req(image, token) {
   try {
     const formData = new FormData(); 
     formData.append("image", image); 
 
-    
     const response = await axios.post(
       "http://localhost:3000/wanted/search/",
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data", 
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`, // Token adicionado aqui
         },
       }
     );
@@ -23,7 +24,7 @@ async function req(image) {
     return response.data; 
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
-    return {erro: error}
+    return { erro: error };
   }
 }
 
@@ -32,6 +33,14 @@ function Form() {
   const [wanted, setWanted] = useState(null);
   const [imageName, setImageName] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // Redireciona para a página de login se o token não estiver presente
+    }
+  }, [navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -43,7 +52,14 @@ function Form() {
 
   const search = async () => {
     setLoading(true);
-    const result = await req(image);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // Redireciona pro login se o token for nulo
+      return;
+    }
+
+    const result = await req(image, token);
     setWanted(result); 
     setLoading(false); 
   };

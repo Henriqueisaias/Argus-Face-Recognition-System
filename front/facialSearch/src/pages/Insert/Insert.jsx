@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Styles from "./Insert.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Insert() {
   const [name, setName] = useState("");
@@ -9,8 +11,15 @@ function Insert() {
   const [cond, setCond] = useState("");
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(null);
-
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // Redireciona para a página de login se o token não estiver presente
+    }
+  }, [navigate]);
 
   const clean = () => {
     setName("");
@@ -19,32 +28,14 @@ function Insert() {
     setWanted(false);
     setCond("");
     setImage(null);
+    setImageName(null);
   };
 
-  const handleName = (e) => {
-    setName(e.target.value);
-    console.log(name);
-  };
-
-  const handleAge = (e) => {
-    setAge(e.target.value);
-    console.log(age);
-  };
-
-  const handleCrime = (e) => {
-    setCrime(e.target.value);
-    console.log(crime);
-  };
-
-  const handleWanted = () => {
-    setWanted(!wanted);
-    console.log(wanted);
-  };
-
-  const handleCond = (e) => {
-    setCond(e.target.value);
-    console.log(cond);
-  };
+  const handleName = (e) => setName(e.target.value);
+  const handleAge = (e) => setAge(e.target.value);
+  const handleCrime = (e) => setCrime(e.target.value);
+  const handleWanted = () => setWanted(!wanted);
+  const handleCond = (e) => setCond(e.target.value);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -54,24 +45,40 @@ function Insert() {
     }
   };
 
-  function insert() {
-    const person = {
-      name: name,
-      age: age,
-      crime: crime,
-      wanted: wanted,
-      cond: cond,
-      image: image,
-    };
+  const insert = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // Redireciona para login se o token não existir
+      return;
+    }
 
-    
-    console.log(person);
-    setLoading(true)
-    window.alert("inserido com sucesso!");
-    setLoading(false)
-    clean();
-    // requisição de post vai aqui
-  }
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("age", age);
+      formData.append("crime", crime);
+      formData.append("wanted", wanted);
+      formData.append("cond", cond);
+      formData.append("image", image);
+
+      await axios.post("http://localhost:3000/wanted/insert", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      window.alert("Inserido com sucesso!");
+      clean();
+    } catch (error) {
+      console.error("Erro ao inserir dados:", error);
+      window.alert("Erro ao inserir dados!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={Styles.container}>
@@ -94,12 +101,12 @@ function Insert() {
         </div>
 
         <div className={Styles.formContainer}>
-          <label htmlFor="cond">Condenano no ano de:</label>
+          <label htmlFor="cond">Condenado no ano de:</label>
           <input type="text" value={cond} onChange={handleCond} />
         </div>
 
         <div className={Styles.checkdiv}>
-          <label htmlFor="cond">Foragido, sim ou não:</label>
+          <label htmlFor="wanted">Foragido, sim ou não:</label>
           <input
             className={Styles.check}
             type="checkbox"
@@ -119,8 +126,8 @@ function Insert() {
           onChange={handleImageChange}
         />
 
-        <button className={Styles.button} onClick={insert} disabled={!image}>
-          Inserir
+        <button className={Styles.button} onClick={insert} disabled={!image || loading}>
+          {loading ? "Inserindo..." : "Inserir"}
         </button>
       </div>
 
@@ -128,9 +135,9 @@ function Insert() {
         <div className={Styles.imagePreview}>
           <h2>Imagem Selecionada:</h2>
           <img
-            className={"img"}
+            className="img"
             src={URL.createObjectURL(image)}
-            // alt={imageName}
+            alt={imageName}
             style={{
               maxHeight: "300px",
               borderRadius: "15px",
@@ -141,13 +148,14 @@ function Insert() {
         </div>
       )}
 
-{loading && (
+      {loading && (
         <div className={Styles.loadingcontainer}>
-        <div className={Styles.loading}><h2>Fazendo reconhecimento...</h2></div>
-        <div className={Styles.spinner}></div>
+          <div className={Styles.loading}>
+            <h2>Fazendo reconhecimento...</h2>
+          </div>
+          <div className={Styles.spinner}></div>
         </div>
       )}
-
     </div>
   );
 }

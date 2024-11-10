@@ -5,3 +5,7 @@ main{
   align-items: center; 
 }
 
+main div {
+  margin: 20px;
+}
+
