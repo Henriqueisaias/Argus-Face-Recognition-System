@@ -52,17 +52,17 @@ export default class UserController {
 
     
 
-    // Criptografando a senha
+  
     const hashedPassword = await bcrypt.hash(password, 10); // 10 é o número de saltos de criptografia
 
     try {
       const newUser = new User({
         user: user,
-        password: hashedPassword, // Use a senha criptografada
+        password: hashedPassword,
         permision: permission,
       });
 
-      // Salva o usuário no banco de dados
+     
       await newUser.save();
 
       res.status(200).json({ message: "Usuário registrado com sucesso!" });
@@ -105,11 +105,14 @@ export default class UserController {
       const { user, password, permission } = req.body;
   
       console.log("Rota de atualização acessada");
+
+
+      const hashedPassword = await bcrypt.hash(password, 10); 
   
       try {
         const updatedUser = await User.findByIdAndUpdate(
           id, 
-          { user, password, permision: permission }, 
+          { user, hashedPassword, permision: permission }, 
           { new: true }
         );
   
