@@ -11,7 +11,7 @@ import gridfs
 client = MongoClient("mongodb://localhost:27017/")
 db = client["faces"]
 fs = gridfs.GridFS(db)
-collection = db["wanted"]
+collection = db["wanteds"]
 
 class FaceRecognitionAPIView(APIView):
     def post(self, request):
