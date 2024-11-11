@@ -7,7 +7,7 @@ const wantedSchema = new mongoose.Schema(
     crimes: { type: String, required: true },
     condemned: { type: String, required: true },
     wanted: { type: Boolean },
-    photo: { type: String },
+    photo: { type: mongoose.Schema.Types.ObjectId, ref: "GridFSFile" },
   },
   { timestamps: true }
 );

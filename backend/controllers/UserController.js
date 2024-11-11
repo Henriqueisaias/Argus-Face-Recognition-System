@@ -100,7 +100,25 @@ export default class UserController {
   }
 
   static async updateUser(req, res) {
-    // aqui vai o update de user
+    {
+      const { id } = req.params;
+      const { user, password, permission } = req.body;
+  
+      console.log("Rota de atualização acessada");
+  
+      try {
+        const updatedUser = await User.findByIdAndUpdate(
+          id, 
+          { user, password, permision: permission }, 
+          { new: true }
+        );
+  
+        res.status(200).json({ message: "Usuário atualizado com sucesso", user: updatedUser });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao atualizar o usuário", error: err });
+      }
+    }
   }
 
   static async deleteUser(req, res) {

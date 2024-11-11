@@ -11,3 +11,5 @@ router.get("/getAll", WantedController.getAll)
 
 router.post("/search", upload.single("image"), WantedController.search);
 export default router;
+
+router.post("/register", upload.single("image"), WantedController.register)
