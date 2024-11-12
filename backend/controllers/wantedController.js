@@ -146,87 +146,78 @@ export default class WantedController {
     }
   }
   
-
   static async search(req, res) {
     try {
-      const image = req.file;
-  
-      if (!image) {
-        return res.status(400).send({ message: "Imagem não enviada" });
-      }
-  
-      
-      // const response = await axios.post(
-      //   "http://localhost:8000/api/recognize/",
-      //   form,
-      //   {
-      //     headers: form.getHeaders(),
-      //   }
-      // );
-      // const id = response.data;
-  
-      // simulando um ID
-      const id = "67314a67a856cdffe0899190"; 
-  
-      if (id !== -1) {
-        
-        const target = await Wanted.findById(id);
-  
-        if (!target) {
-          return res.status(404).send({ message: "Pessoa procurada não encontrada" });
-        }
-  
-        const imgId = target.photo;
-  
-        if (!imgId) {
-          return res.status(404).send({ message: "Imagem associada não encontrada" });
-        }
-  
-        const db = mongoose.connection.db;
+        const image = req.file;
 
-       
-        const imageBuffer = await db.collection("uploads.files").findOne({ _id: new ObjectId(imgId) });
-  
-        
-        if (!imageBuffer) {
-          console.log(`Imagem não encontrada no GridFS para o ID: ${imgId}`);
-          return res.json({ ...target.toObject(), photo: null });
+        if (!image) {
+            return res.status(400).send({ message: "Imagem não enviada" });
         }
-  
-       
-        const imgData = await db.collection("uploads.chunks").find({ files_id: new ObjectId(imgId) }).toArray();
-  
-        
-        if (!imgData.length) {
-          console.log(`Sem chunks para a imagem com ID: ${imgId}`);
-          return res.json({ ...target.toObject(), photo: null });
+
+        const formData = new FormData();
+        formData.append("photo", image.buffer.toString("base64"));  // Passa a imagem como base64
+
+        const response = await axios.post(
+            "http://localhost:8000/api/recognize/",
+            formData,
+            {
+                headers: {
+                    ...formData.getHeaders(),  // Inclui headers do FormData
+                },
+            }
+        );
+
+        const id = response.data.id;
+
+        if (id !== -1) {
+            const target = await Wanted.findById(id);
+
+            if (!target) {
+                return res.status(404).send({ message: "Pessoa procurada não encontrada" });
+            }
+
+            const imgId = target.photo;
+
+            if (!imgId) {
+                return res.status(404).send({ message: "Imagem associada não encontrada" });
+            }
+
+            const db = mongoose.connection.db;
+
+            const imageBuffer = await db.collection("uploads.files").findOne({ _id: new ObjectId(imgId) });
+
+            if (!imageBuffer) {
+                console.log(`Imagem não encontrada no GridFS para o ID: ${imgId}`);
+                return res.json({ ...target.toObject(), photo: null });
+            }
+
+            const imgData = await db.collection("uploads.chunks").find({ files_id: new ObjectId(imgId) }).toArray();
+
+            if (!imgData.length) {
+                console.log(`Sem chunks para a imagem com ID: ${imgId}`);
+                return res.json({ ...target.toObject(), photo: null });
+            }
+
+            const imageChunks = imgData.map(chunk => chunk.data.buffer);
+            const fullImageBuffer = Buffer.concat(imageChunks);
+
+            const resizedImageBuffer = await sharp(fullImageBuffer)
+                .resize(200)
+                .toBuffer();
+
+            const base64Image = resizedImageBuffer.toString("base64");
+            const imgSrc = `data:image/jpeg;base64,${base64Image}`;
+
+            return res.json({ ...target.toObject(), photo: imgSrc });
+        } else {
+            return res.status(400).send({ message: "Nenhum ID válido encontrado" });
         }
-  
-       
-        const imageChunks = imgData.map(chunk => chunk.data.buffer);
-        const fullImageBuffer = Buffer.concat(imageChunks);
-  
-       
-        const resizedImageBuffer = await sharp(fullImageBuffer)
-          .resize(200) 
-          .toBuffer();
-  
-        const base64Image = resizedImageBuffer.toString("base64");
-        const imgSrc = `data:image/jpeg;base64,${base64Image}`;
-  
-        return res.json({ ...target.toObject(), photo: imgSrc });
-      } else {
-       
-        return res.status(400).send({ message: "Nenhum ID válido encontrado" });
-      }
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: `Erro inesperado: ${err.message}` });
+        console.error(err);
+        return res.status(500).json({ message: `Erro inesperado: ${err.message}` });
     }
-  }
-  
-  
-  
+}
+
 
   static async getOne(req, res) {
     const { name, age, crimes, condemned, wanted,} = req.body;
