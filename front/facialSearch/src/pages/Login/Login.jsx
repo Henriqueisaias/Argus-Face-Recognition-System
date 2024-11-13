@@ -1,9 +1,13 @@
 import Styles from "./Login.module.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import { AuthContext } from "../../hooks/AuthContext";
+
+import axios from "axios";
 
 function Login() {
+  const { loginToken } = useContext(AuthContext);
+
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -23,37 +27,31 @@ function Login() {
     console.log(password);
   };
 
+  const login = async () => {
+    const send = { user, password };
 
-const login = async () => {
-  const send = { user, password };
-
-  if (user === "" || password === "") {
-    return console.log("Por favor, preencha os dados.");
-  }
-
-  try {
-    const response = await axios.post("URL_DA_API", send);
-
-    // Verifique se o token foi recebido na resposta
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token); // Armazena o token no localStorage
-      console.log("Login bem-sucedido!");
-      navigate("/form");
-      clean();
-
-
-
-      
-    
-    
-    } else {
-      console.log("Token não recebido.");
+    if (user === "" || password === "") {
+      return console.log("Por favor, preencha os dados.");
     }
-  } catch (error) {
-    console.error("Erro no login:", error);
-  }
-};
 
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/users/login",
+        send
+      );
+
+      if (response.data.token) {
+        loginToken(response.data.token);
+        console.log("Login bem-sucedido!");
+        navigate("/form");
+        clean();
+      } else {
+        console.log("Token não recebido.");
+      }
+    } catch (error) {
+      console.error("Erro no login:", error);
+    }
+  };
 
   return (
     <div>

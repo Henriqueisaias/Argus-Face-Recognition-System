@@ -1,7 +1,5 @@
-
 header h2 {
   font-size: 2em;
-  
 }
 
 header {
@@ -18,22 +16,24 @@ header {
 nav {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   font-size: 1.1rem;
-  width: 500px;
+  width: 100%;
 }
 
 .navLink {
-    padding: 10px;
-    border-radius: 10px;
-    color: dimgrey;
-    text-decoration: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: dimgrey;
+  text-decoration: none;
 }
 
 .navLink:hover {
-
-  color:white;
+  color: white;
   background-color: #4a90e2;
   text-decoration: none;
 }
 
+.btn button {
+  background-color: #4a90e2;
+}

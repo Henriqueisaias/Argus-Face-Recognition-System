@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 async function req(image, token) {
   try {
-    const formData = new FormData(); 
-    formData.append("image", image); 
+    const formData = new FormData();
+    formData.append("image", image);
 
     const response = await axios.post(
       "http://localhost:3000/wanted/search/",
@@ -15,13 +15,13 @@ async function req(image, token) {
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}`, // Token adicionado aqui
+          Authorization: `Bearer ${token}`, // Token adicionado aqui
         },
       }
     );
 
     console.log(response.data);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
     return { erro: error };
@@ -38,7 +38,7 @@ function Form() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/"); // Redireciona para a página de login se o token não estiver presente
+      navigate("/");
     }
   }, [navigate]);
 
@@ -55,13 +55,13 @@ function Form() {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/"); // Redireciona pro login se o token for nulo
+      navigate("/");
       return;
     }
 
     const result = await req(image, token);
-    setWanted(result); 
-    setLoading(false); 
+    setWanted(result);
+    setLoading(false);
   };
 
   return (
@@ -82,7 +82,6 @@ function Form() {
         <button className={styles.button} onClick={search} disabled={!image}>
           Buscar Pessoa
         </button>{" "}
-      
       </div>
 
       {image && (
@@ -91,7 +90,11 @@ function Form() {
           <img
             src={URL.createObjectURL(image)}
             alt={imageName}
-            style={{ maxHeight: "300px", borderRadius: "15px", marginBottom: "20px"  }}
+            style={{
+              maxHeight: "300px",
+              borderRadius: "15px",
+              marginBottom: "20px",
+            }}
           />
           <p>{imageName}</p>
         </div>
@@ -99,8 +102,10 @@ function Form() {
 
       {loading && (
         <div className={styles.loadingcontainer}>
-        <div className={styles.loading}><h2>Fazendo reconhecimento...</h2></div>
-        <div className={styles.spinner}></div>
+          <div className={styles.loading}>
+            <h2>Fazendo reconhecimento...</h2>
+          </div>
+          <div className={styles.spinner}></div>
         </div>
       )}
 
@@ -115,7 +120,6 @@ function Form() {
           <Wanted wanted={wanted} />
         </div>
       )}
-
     </div>
   );
 }
