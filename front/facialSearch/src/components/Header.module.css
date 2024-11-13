@@ -1,0 +1,39 @@
+
+header h2 {
+  font-size: 2em;
+  
+}
+
+header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.295);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  flex-direction: column;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1.1rem;
+  width: 500px;
+}
+
+.navLink {
+    padding: 10px;
+    border-radius: 10px;
+    color: dimgrey;
+    text-decoration: none;
+}
+
+.navLink:hover {
+
+  color:white;
+  background-color: #4a90e2;
+  text-decoration: none;
+}
+

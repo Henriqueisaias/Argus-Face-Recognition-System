@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: monospace;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileUpload {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="text"],
+input[type="number"] {
+  height: 40px;
+  border-radius: 15px;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.check {
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+
+label {
+  font-size: 18px;
+}
+
+.formContainer {
+  display: flex;
+  width: 300px;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.formContainer label {
+    text-align: center;
+}
+
+.checkdiv{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px;
+}
+
+.button {
+  background-color: #4a90e2;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.button:hover {
+  background-color: #0c477a;
+}
+
+.imagePreview {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.loading{
+    margin-top: 20px;
+    color: #09f;
+  }
+  
+  
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 40px;
+    margin-top: 10px;
+    height: 40px;
+    border-radius: 50%;
+    border-left-color: #09f;
+    animation: spin 1s ease infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loadingcontainer {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
