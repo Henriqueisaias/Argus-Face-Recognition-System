@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import styles from "./Wanted.module.css";
 
 function Wanted({ wanted }) {
@@ -9,7 +9,7 @@ function Wanted({ wanted }) {
 
   return (
     <>
-    {wanted.nome && (<div className={styles.container}
+    {wanted.name && (<div className={styles.container}
       style={{
         marginBottom: "20px",
         border: "1px solid #ccc",
@@ -18,11 +18,12 @@ function Wanted({ wanted }) {
       }}
     >
       <div className={styles.resultimg}><img src={wanted.photo} /></div>
-      <h3>{wanted.nome}</h3>
+      <h3>{wanted.name}</h3>
       <div className="data">
-          <p>Idade: {wanted.idade}</p>
-          <p>Crimes: {wanted.crimes.join(", ")}</p> 
+          <p>Idade: {wanted.age}</p>
+          <p>Crimes: {wanted.crimes}</p> 
       </div>
+      <div>Condenado em: {wanted.condemnd}</div>
     </div>)}
 
     {wanted.message && (<div className={styles.container}

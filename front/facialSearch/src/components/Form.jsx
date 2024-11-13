@@ -10,7 +10,7 @@ async function req(image, token) {
     formData.append("image", image);
 
     const response = await axios.post(
-      "http://localhost:3000/wanted/search/",
+      "http://localhost:3000/wanted/search",
       formData,
       {
         headers: {
@@ -47,6 +47,7 @@ function Form() {
     if (file) {
       setImage(file);
       setImageName(file.name);
+      console.log(imageName)
     }
   };
 
@@ -60,6 +61,9 @@ function Form() {
     }
 
     const result = await req(image, token);
+    
+
+
     setWanted(result);
     setLoading(false);
   };

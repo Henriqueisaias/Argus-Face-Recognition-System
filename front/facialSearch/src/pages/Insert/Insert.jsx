@@ -58,12 +58,12 @@ function Insert() {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("age", age);
-      formData.append("crime", crime);
+      formData.append("crimes", crime);
       formData.append("wanted", wanted);
-      formData.append("cond", cond);
+      formData.append("condemned", cond);
       formData.append("image", image);
 
-      await axios.post("http://localhost:3000/wanted/insert", formData, {
+      await axios.post("http://localhost:3000/wanted/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

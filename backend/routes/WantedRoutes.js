@@ -10,8 +10,9 @@ router.post("/getOne", WantedController.getOne)
 router.get("/getAll", WantedController.getAll)
 
 router.post("/search", upload.single("image"), WantedController.search);
-export default router;
 
 router.post("/register", upload.single("image"), WantedController.register)
 
 router.put("/update/:id", upload.single("image"), WantedController.update )
+
+export default router;

@@ -147,6 +147,7 @@ export default class WantedController {
   }
   
   static async search(req, res) {
+    console.log("rota acessada")
     try {
         const image = req.file;
 
