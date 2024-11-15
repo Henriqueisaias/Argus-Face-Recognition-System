@@ -4,7 +4,7 @@ header h2 {
 
 header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.295);
-  width: 100%;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,9 +18,20 @@ nav {
   align-items: center;
   justify-content: space-between;
   font-size: 1.1rem;
-  width: 100%;
+  width: 90%;
 }
 
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+}
+
+.logo img {
+  width: 80px;
+}
 .navLink {
   padding: 10px;
   border-radius: 10px;

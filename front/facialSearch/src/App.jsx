@@ -7,18 +7,20 @@ import Form from "./components/Form.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/insert" element={<Insert />} />
-            <Route path="/form" element={<Form />} />
-          </Routes>
-        </main>
-      </Router>
-    </AuthProvider>
+    
+      <AuthProvider>
+        <Router>
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/insert" element={<Insert />} />
+              <Route path="/form" element={<Form />} />
+            </Routes>
+          </main>
+        </Router>
+      </AuthProvider>
+    
   );
 }
 

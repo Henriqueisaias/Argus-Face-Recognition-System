@@ -1,4 +1,5 @@
 import Styles from "./Header.module.css";
+import eyeImage from "../assets/eye.png";
 import { Link } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../hooks/AuthContext";
@@ -19,12 +20,12 @@ function Header() {
     <>
       {token && (
         <header>
-          <h2>Argus</h2>
+          <div className={Styles.logo}>
+            
+            <img src={eyeImage} />
+          </div>
           <nav>
             <div className={Styles.links}>
-              <Link to="/" className={Styles.navLink}>
-                Login
-              </Link>
               <Link to="/insert" className={Styles.navLink}>
                 Cadastrar procurados
               </Link>
