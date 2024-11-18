@@ -18,12 +18,13 @@ body {
 .container {
   background-color: white;
   padding: 30px;
-  width: 100%;
-  max-width: 600px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.329);
   border-radius: 10px;
-  text-align: center;
+  width: 90%;
+  display: flex;
   margin: 0 auto;
+  justify-content: center;
+  gap: 100px;
 }
 
 h2 {
@@ -37,11 +38,15 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
+ 
 }
 
 .file-upload label {
   cursor: pointer;
-  width: 100%; /* Para que o botão ocupe toda a largura disponível */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .button {
@@ -52,8 +57,16 @@ h2 {
   cursor: pointer;
   font-size: 16px;
   margin: 10px 0;
+  text-align: center;
   display: inline-block;
-  width: 100%; /* Para que o botão ocupe toda a largura disponível */
+  width: 90%; /* Para que o botão ocupe toda a largura disponível */
+}
+
+.buttonDiv{
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .button:hover {
@@ -66,7 +79,7 @@ h2 {
   color: dimgray;
   background-color: #bcc9df;
   border-radius: 5px;
-  width: 100%; /* Ocupa toda a largura do contêiner */
+  width: 400px; /* Ocupa toda a largura do contêiner */
 }
 
 .results h2 {
@@ -83,6 +96,10 @@ h2 {
 .loading{
   margin-top: 20px;
   color: #09f;
+}
+
+.imagePreview{
+  text-align: center;
 }
 
 

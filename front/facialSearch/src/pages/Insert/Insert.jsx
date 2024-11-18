@@ -143,9 +143,8 @@ function Insert() {
         <button className={Styles.button} onClick={insert} disabled={!image || loading}>
           {loading ? "Inserindo..." : "Inserir"}
         </button>
-      </div>
 
-      {image && (
+        {image && (
         <div className={Styles.imagePreview}>
           <h2>Imagem Selecionada:</h2>
           <img
@@ -161,6 +160,9 @@ function Insert() {
           <p>{imageName}</p>
         </div>
       )}
+      </div>
+
+      
 
       {loading && (
         <div className={Styles.loadingcontainer}>

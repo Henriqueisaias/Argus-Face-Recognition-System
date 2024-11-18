@@ -57,7 +57,7 @@ function Search() {
   };
 
   return (
-    <div>
+    <div className={Styles.main}>
     <div className={Styles.container}>
       <h2>Busca por Cpf</h2>
 

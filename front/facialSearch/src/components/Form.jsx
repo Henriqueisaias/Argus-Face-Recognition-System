@@ -67,24 +67,26 @@ function Form() {
 
   return (
     <div className={styles.container}>
-      <h2>Busca por reconhecimento facial</h2>
-
+      
       <div className={styles.fileUpload}>
+      <h2>Busca por reconhecimento facial</h2>
+        
+        <div className={styles.buttonDiv}>
         <label htmlFor="fileInput" className={styles.button}>
           Selecionar Imagem
         </label>
-        <input
-          type="file"
-          id="fileInput"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={handleImageChange}
-        />
-        <button className={styles.button} onClick={search} disabled={!image}>
-          Buscar Pessoa
-        </button>{" "}
-      </div>
-
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleImageChange}
+          />
+          <button className={styles.button} onClick={search} disabled={!image}>
+            Buscar Pessoa
+          </button>{" "}
+        </div>
+        
       {image && (
         <div className={styles.imagePreview}>
           <h2>Imagem Selecionada:</h2>
@@ -109,6 +111,8 @@ function Form() {
           <div className={styles.spinner}></div>
         </div>
       )}
+      </div>
+
 
       {wanted && (
         <div className={styles.results}>

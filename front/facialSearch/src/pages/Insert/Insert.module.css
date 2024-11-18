@@ -14,6 +14,7 @@
 .fileUpload {
   display: flex;
   flex-direction: column;
+  margin-bottom: 150px;
 }
 
 input[type="text"],
