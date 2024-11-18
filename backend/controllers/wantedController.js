@@ -38,11 +38,10 @@ mongoose.connection.on('connected', () => {
 
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 export default class WantedController {
   static async register(req, res) {
-    const { name, age, crimes, condemned, wanted } = req.body;
+    const { name, age, crimes, cpf, condemned, wanted } = req.body;
     const { file } = req;
   
     if (!name) return res.status(422).json({ message: "O nome é obrigatório" });
@@ -50,6 +49,7 @@ export default class WantedController {
     if (!crimes) return res.status(422).json({ message: "Crimes são obrigatórios" });
     if (!condemned) return res.status(422).json({ message: "O campo condenado é obrigatório" });
     if (wanted === undefined) return res.status(422).json({ message: "O campo wanted é obrigatório" });
+    if (cpf === undefined) return res.status(422).json({ message: "O campo cpf é obrigatório" });
     if (!file) return res.status(422).json({ message: "A foto é obrigatória" });
   
     try {
@@ -70,6 +70,7 @@ export default class WantedController {
           age,
           crimes,  
           condemned,
+          cpf,
           wanted,
           photo: uploadStream.id
         });
@@ -170,7 +171,9 @@ export default class WantedController {
 
         const id = response.data.id;
 
-        if (id !== -1) {
+        console.log(id)
+
+        if (id !== "-1") {
             const target = await Wanted.findById(id);
 
             if (!target) {
@@ -211,7 +214,9 @@ export default class WantedController {
 
             return res.json({ ...target.toObject(), photo: imgSrc });
         } else {
-            return res.status(400).send({ message: "Nenhum ID válido encontrado" });
+            console.log("ID inválido, retornando 400");
+            return res.json({ message: "Nenhum rosto encontrado" });
+            
         }
     } catch (err) {
         console.error(err);
@@ -221,20 +226,27 @@ export default class WantedController {
 
 
   static async getOne(req, res) {
-    const { name, age, crimes, condemned, wanted,} = req.body;
+    const cpf = req.params.cpf
 
-    if (!name && !age && !crimes && !condemned && !wanted) {
+    console.log("rota acessada")
+    console.log(cpf)
+
+    if (!cpf) {
       return res.send({ message: "Erro nenhum dado preenchido" });
     }
 
-    const wantedGetOne = { name, age, crimes, condemned, wanted, photo };
+    
 
     try {
-      const result = await Wanted.findOne({ ...wantedGetOne });
+      const result = await Wanted.findOne({cpf: cpf});
+
+      console.log(result)
 
       if (!result) {
-        res.send({ message: "nenhum resultado encontrado" });
+        return res.send({ message: "nenhum resultado encontrado" });
       }
+
+      const target = result
 
       const imgId = result.photo;
 
@@ -298,7 +310,7 @@ export default class WantedController {
   }
 
   static async update(req, res) {
-    const { name, age, crimes, condemned, wanted } = req.body;
+    const { name, age, crimes, cpf, condemned, wanted } = req.body;
     const { file } = req;
     const { id } = req.params; 
 
@@ -306,6 +318,7 @@ export default class WantedController {
     if (!age) return res.status(422).json({ message: "A idade é obrigatória" });
     if (!crimes) return res.status(422).json({ message: "Crimes são obrigatórios" });
     if (!condemned) return res.status(422).json({ message: "O campo condenado é obrigatório" });
+    if (!cpf) return res.status(422).json({ message: "O campo cpf é obrigatório" });
     if (wanted === undefined) return res.status(422).json({ message: "O campo wanted é obrigatório" });
 
     try {
@@ -319,12 +332,12 @@ export default class WantedController {
         }
 
         if (file) {
-            // Remove a foto antiga do bucket, se houver uma.
+            
             if (wantedPerson.photo) {
                 await bucket.delete(wantedPerson.photo);
             }
 
-            // Realiza o upload da nova foto.
+           
             const uploadStream = bucket.openUploadStream(file.originalname);
             uploadStream.end(file.buffer);
 
@@ -334,11 +347,12 @@ export default class WantedController {
             });
         }
 
-        // Atualiza os outros campos da pessoa procurada.
+        
         wantedPerson.name = name;
         wantedPerson.age = age;
         wantedPerson.crimes = crimes;
         wantedPerson.condemned = condemned;
+        wantedPerson.cpf = cpf;
         wantedPerson.wanted = wanted;
 
         const updatedPerson = await Wanted.findByIdAndUpdate(id, wantedPerson, { new: true });

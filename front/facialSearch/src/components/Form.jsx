@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 async function req(image, token) {
-  try {
+  
     const formData = new FormData();
     formData.append("image", image);
 
@@ -22,10 +22,7 @@ async function req(image, token) {
 
     console.log(response.data);
     return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error);
-    return { erro: error };
-  }
+  
 }
 
 function Form() {
@@ -116,11 +113,6 @@ function Form() {
       {wanted && (
         <div className={styles.results}>
           <h2>Resultados do Reconhecimento</h2>
-          {wanted.erro && (
-            <div>
-              <h2>Ocorreu um erro inesperado: {wanted.erro.message}</h2>
-            </div>
-          )}
           <Wanted wanted={wanted} />
         </div>
       )}

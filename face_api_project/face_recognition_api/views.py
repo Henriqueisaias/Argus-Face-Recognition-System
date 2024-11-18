@@ -68,4 +68,8 @@ class FaceRecognitionAPIView(APIView):
                     "id": str(individuo_correspondente['_id']),
                 }, status=status.HTTP_200_OK)
 
-        return Response({"message": "Rosto não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"id": "-1"}, status=status.HTTP_200_OK)
+
+
+
+

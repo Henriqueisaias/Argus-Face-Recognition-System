@@ -6,39 +6,47 @@ function Wanted({ wanted }) {
     console.log("Dados recebidos no componente Wanted:", wanted);
   }, [wanted]);
 
-
   return (
     <>
-    {wanted.name && (<div className={styles.container}
-      style={{
-        marginBottom: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        padding: "10px",
-      }}
-    >
-      <div className={styles.resultimg}><img src={wanted.photo} /></div>
-      <h3>{wanted.name}</h3>
-      <div className="data">
-          <p>Idade: {wanted.age}</p>
-          <p>Crimes: {wanted.crimes}</p> 
-      </div>
-      <div>Condenado em: {wanted.condemnd}</div>
-    </div>)}
+      {wanted.name && (
+        <div
+          className={styles.container}
+          style={{
+            marginBottom: "20px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            padding: "10px",
+          }}
+        >
+          <div className={styles.resultimg}>
+            <img src={wanted.photo} />
+          </div>
+          <h3>{wanted.name}</h3>
 
-    {wanted.message && (<div className={styles.container}
-      style={{
-        marginBottom: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        padding: "10px",
-      }}
-    >
-        <h2>{wanted.message}</h2>
-    </div>)}
+          <div className="data">
+            <p>CPF: {wanted.cpf}</p>
+            <p>Idade: {wanted.age}</p>
+            <p>Crimes: {wanted.crimes}</p>
+          </div>
+          {wanted.condemnd && <div>Condenado em: {wanted.condemnd}</div>}
+        </div>
+      )}
 
-    </>);
+      {wanted.message && (
+        <div
+          className={styles.container}
+          style={{
+            marginBottom: "20px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            padding: "10px",
+          }}
+        >
+          <h2>{wanted.message}</h2>
+        </div>
+      )}
+    </>
+  );
 }
-
 
 export default Wanted;

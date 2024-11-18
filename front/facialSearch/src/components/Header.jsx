@@ -30,7 +30,10 @@ function Header() {
                 Cadastrar procurados
               </Link>
               <Link to="/form" className={Styles.navLink}>
-                Busca
+                Busca por Face
+              </Link>
+              <Link to="/Search" className={Styles.navLink}>
+                Busca por Cpf
               </Link>
             </div>
             <div className={Styles.btn}>

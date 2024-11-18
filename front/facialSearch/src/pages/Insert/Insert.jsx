@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function Insert() {
   const [name, setName] = useState("");
+  const [cpf, setCpf] = useState("");
   const [age, setAge] = useState(18);
   const [crime, setCrime] = useState([]);
   const [wanted, setWanted] = useState(false);
@@ -36,6 +37,13 @@ function Insert() {
   const handleCrime = (e) => setCrime(e.target.value);
   const handleWanted = () => setWanted(!wanted);
   const handleCond = (e) => setCond(e.target.value);
+  const handleCpf = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value.length > 11) {
+      value = value.substring(0, 11);
+    }
+    setCpf(value);
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -48,7 +56,7 @@ function Insert() {
   const insert = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/"); // Redireciona para login se o token não existir
+      navigate("/");
       return;
     }
 
@@ -61,6 +69,7 @@ function Insert() {
       formData.append("crimes", crime);
       formData.append("wanted", wanted);
       formData.append("condemned", cond);
+      formData.append("cpf", cpf)
       formData.append("image", image);
 
       await axios.post("http://localhost:3000/wanted/register", formData, {
@@ -98,6 +107,11 @@ function Insert() {
         <div className={Styles.formContainer}>
           <label htmlFor="idade">Idade:</label>
           <input type="number" value={age} onChange={handleAge} />
+        </div>
+
+        <div className={Styles.formContainer}>
+          <label htmlFor="Cpf">Cpf:</label>
+          <input type="text" value={cpf} onChange={handleCpf} pattern="^\d+$" />
         </div>
 
         <div className={Styles.formContainer}>

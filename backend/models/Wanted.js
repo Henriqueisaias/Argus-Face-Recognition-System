@@ -6,7 +6,8 @@ const wantedSchema = new mongoose.Schema(
     age: { type: Number, required: true },
     crimes: { type: String, required: true },
     condemned: { type: String, required: true },
-    wanted: { type: Boolean },
+    wanted: { type: Boolean, required :true },
+    cpf: { type: String, required: true },
     photo: { type: mongoose.Schema.Types.ObjectId, ref: "GridFSFile" },
   },
   { timestamps: true }
