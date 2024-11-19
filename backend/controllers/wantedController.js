@@ -173,7 +173,7 @@ export default class WantedController {
 
         console.log(id)
 
-        if (id !== "-1") {
+        if (id && id !== "-1") {
             const target = await Wanted.findById(id);
 
             if (!target) {

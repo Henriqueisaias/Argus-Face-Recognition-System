@@ -9,7 +9,7 @@ import unicodedata
 client = MongoClient("mongodb://localhost:27017/")
 db = client["faces"]
 fs = gridfs.GridFS(db)
-collection = db["wanted"]
+collection = db["wanteds"]
 
 def normalize_text(text):
     """Normaliza o texto para remover caracteres especiais."""
@@ -37,12 +37,16 @@ def main():
         print("Não foi possível abrir a webcam.")
         return
 
+    # Definir a resolução de captura para 640x480 (480p)
+    video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+    video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+
     individuos = buscar_individuos_no_mongodb()
     encodings_referencia = []
     dados_individuos = []
 
     for individuo in individuos:
-        encoding = obter_encoding_referencia(individuo["foto"])
+        encoding = obter_encoding_referencia(individuo["photo"])
         if encoding is not None:
             encodings_referencia.append(encoding)
             dados_individuos.append(individuo)
@@ -68,11 +72,11 @@ def main():
                 distancia = face_recognition.face_distance([encoding_referencia], encoding_frame)[0]
 
                 if distancia < 0.6:
-                    nome = normalize_text(individuo['nome']).upper()
-                    idade = individuo['idade']
+                    nome = normalize_text(individuo['name']).upper()
+                    idade = individuo['age']
                     crimes = individuo.get('crimes', [])
-                    condenado_em = individuo.get('condenado_em', "")
-                    foragido = individuo.get('foragido', False)
+                    condenado_em = individuo.get('condemned', "")
+                    foragido = individuo.get('wanted', False)
                     rosto_reconhecido = True
                     break
 

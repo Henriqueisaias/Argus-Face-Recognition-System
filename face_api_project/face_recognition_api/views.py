@@ -32,7 +32,7 @@ class FaceRecognitionAPIView(APIView):
         face_encodings = face_recognition.face_encodings(rgb_image, face_locations)
 
         if len(face_encodings) == 0:
-            return Response({"message": "Nenhum rosto encontrado."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Nenhum rosto encontrado."}, status=status.HTTP_200_OK)
 
         # Buscar todos os indivíduos no MongoDB
         individuos = collection.find({})
