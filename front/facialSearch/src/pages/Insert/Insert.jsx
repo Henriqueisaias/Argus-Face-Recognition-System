@@ -38,7 +38,7 @@ function Insert() {
   const handleWanted = () => setWanted(!wanted);
   const handleCond = (e) => setCond(e.target.value);
   const handleCpf = (e) => {
-    let value = e.target.value.replace(/[^0-9]/g, '');
+    let value = e.target.value.replace(/[^0-9]/g, "");
     if (value.length > 11) {
       value = value.substring(0, 11);
     }
@@ -69,7 +69,7 @@ function Insert() {
       formData.append("crimes", crime);
       formData.append("wanted", wanted);
       formData.append("condemned", cond);
-      formData.append("cpf", cpf)
+      formData.append("cpf", cpf);
       formData.append("image", image);
 
       await axios.post("http://localhost:3000/wanted/register", formData, {
@@ -111,7 +111,7 @@ function Insert() {
 
         <div className={Styles.formContainer}>
           <label htmlFor="Cpf">Cpf:</label>
-          <input type="text" value={cpf} onChange={handleCpf} pattern="^\d+$" />
+          <input type="text" value={cpf} onChange={handleCpf} />
         </div>
 
         <div className={Styles.formContainer}>
@@ -140,29 +140,31 @@ function Insert() {
           onChange={handleImageChange}
         />
 
-        <button className={Styles.button} onClick={insert} disabled={!image || loading}>
+        <button
+          className={Styles.button}
+          onClick={insert}
+          disabled={!image || loading}
+        >
           {loading ? "Inserindo..." : "Inserir"}
         </button>
 
         {image && (
-        <div className={Styles.imagePreview}>
-          <h2>Imagem Selecionada:</h2>
-          <img
-            className="img"
-            src={URL.createObjectURL(image)}
-            alt={imageName}
-            style={{
-              maxHeight: "300px",
-              borderRadius: "15px",
-              marginBottom: "20px",
-            }}
-          />
-          <p>{imageName}</p>
-        </div>
-      )}
+          <div className={Styles.imagePreview}>
+            <h2>Imagem Selecionada:</h2>
+            <img
+              className="img"
+              src={URL.createObjectURL(image)}
+              alt={imageName}
+              style={{
+                maxHeight: "300px",
+                borderRadius: "15px",
+                marginBottom: "20px",
+              }}
+            />
+            <p>{imageName}</p>
+          </div>
+        )}
       </div>
-
-      
 
       {loading && (
         <div className={Styles.loadingcontainer}>

@@ -77,15 +77,16 @@ h2 {
   margin-top: 30px;
   padding: 15px;
   color: dimgray;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.329);
   background-color: #bcc9df;
   border-radius: 5px;
-  width: 400px; /* Ocupa toda a largura do contêiner */
+  width: 400px;
 }
 
 .results h2 {
   color: #4a90e2;
   margin-bottom: 10px;
-  font-size: 20px; /* Tamanho do texto para melhor legibilidade */
+  font-size: 20px;
 }
 
 .results p {

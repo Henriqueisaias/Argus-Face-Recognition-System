@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Styles from "./Search.module.css";
 import axios from "axios";
-import Wanted from "../../components/Wanted";
+import Wanted from "../FacialSearch/Wanted";
 import { useNavigate } from "react-router-dom";
 
 function Search() {

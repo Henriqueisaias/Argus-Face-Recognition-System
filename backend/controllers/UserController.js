@@ -9,13 +9,6 @@ export default class UserController {
   static async register(req, res) {
     const { user, password, confirmpassword, permission } = req.body;
 
-    
-    
-    console.log('Corpo da requisição:', req.body); // Log do corpo da requisição
-    console.log("Valor de 'user' recebido:", user);
-    console.log("Tipo de 'user':", typeof user);
-    
-
     if (!user) {
       return res
         .status(422)
@@ -50,9 +43,6 @@ export default class UserController {
         .json({ message: "As senhas informadas não coincidem" });
     }
 
-    
-
-  
     const hashedPassword = await bcrypt.hash(password, 10); // 10 é o número de saltos de criptografia
 
     try {
@@ -62,7 +52,6 @@ export default class UserController {
         permision: permission,
       });
 
-     
       await newUser.save();
 
       res.status(200).json({ message: "Usuário registrado com sucesso!" });
@@ -74,9 +63,9 @@ export default class UserController {
   }
 
   static async login(req, res) {
-    const user = req.body.user
-    const password = req.body.password
-    console.log(user, password)
+    const user = req.body.user;
+    const password = req.body.password;
+    console.log(user, password);
 
     if (!user || !password) {
       return res
@@ -85,13 +74,13 @@ export default class UserController {
     }
 
     const userExists = await User.findOne({ user });
-    console.log(userExists)
+    console.log(userExists);
     if (!userExists) {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
     const passwordMatch = await bcrypt.compare(password, userExists.password);
-    console.log(passwordMatch)
+    console.log(passwordMatch);
     if (!passwordMatch) {
       return res.status(422).json({ message: "Senha inválida" });
     }
@@ -103,23 +92,25 @@ export default class UserController {
     {
       const { id } = req.params;
       const { user, password, permission } = req.body;
-  
-      console.log("Rota de atualização acessada");
 
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-      const hashedPassword = await bcrypt.hash(password, 10); 
-  
       try {
         const updatedUser = await User.findByIdAndUpdate(
-          id, 
-          { user, hashedPassword, permision: permission }, 
+          id,
+          { user, hashedPassword, permision: permission },
           { new: true }
         );
-  
-        res.status(200).json({ message: "Usuário atualizado com sucesso", user: updatedUser });
+
+        res.status(200).json({
+          message: "Usuário atualizado com sucesso",
+          user: updatedUser,
+        });
       } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Erro ao atualizar o usuário", error: err });
+        res
+          .status(500)
+          .json({ message: "Erro ao atualizar o usuário", error: err });
       }
     }
   }
@@ -137,8 +128,7 @@ export default class UserController {
   }
 
   static async getAllUsers(req, res) {
-    console.log("rota acessada");
-    const allUsers = await User.find().toArray();
+    const allUsers = await User.find();
     res.send(allUsers);
   }
 }

@@ -1,29 +1,14 @@
 import { Wanted } from "../models/Wanted.js";
-import mongoose from 'mongoose';
 import { GridFSBucket } from 'mongodb';
 import { connect } from "../db/conn.js";
 import { ObjectId } from "mongodb";
-import multer from 'multer';
+import mongoose from 'mongoose';
 import sharp from "sharp";
 import axios from "axios";
 import FormData from "form-data";
 
 
 const db = await connect();
-
-if (mongoose.connection.readyState === 0) {
-  mongoose.connect('mongodb://localhost:27017/faces', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('MongoDB conectado');
-  }).catch((err) => {
-    console.error('Erro ao conectar no MongoDB', err);
-  });
-} else {
-  console.log('Já existe uma conexão ativa com o MongoDB');
-}
-
 
 let bucket;
 mongoose.connection.on('connected', () => {
@@ -35,9 +20,6 @@ mongoose.connection.on('connected', () => {
     console.log('GridFSBucket criado com sucesso');
   }
 });
-
-
-const storage = multer.memoryStorage();
 
 export default class WantedController {
   static async register(req, res) {
@@ -86,6 +68,7 @@ export default class WantedController {
   }
   
   static async getAll(req, res) {
+
     try {
       
       const db = mongoose.connection.db;
@@ -140,7 +123,7 @@ export default class WantedController {
         })
       );
   
-      res.json(results);  // Envia os resultados com as fotos em base64
+      res.json(results);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Erro ao buscar dados." });
@@ -148,7 +131,6 @@ export default class WantedController {
   }
   
   static async search(req, res) {
-    console.log("rota acessada")
     try {
         const image = req.file;
 
@@ -157,21 +139,18 @@ export default class WantedController {
         }
 
         const formData = new FormData();
-        formData.append("photo", image.buffer.toString("base64"));  // Passa a imagem como base64
-
+        formData.append("photo", image.buffer.toString("base64")); 
         const response = await axios.post(
             "http://localhost:8000/api/recognize/",
             formData,
             {
                 headers: {
-                    ...formData.getHeaders(),  // Inclui headers do FormData
+                    ...formData.getHeaders(),
                 },
             }
         );
 
         const id = response.data.id;
-
-        console.log(id)
 
         if (id && id !== "-1") {
             const target = await Wanted.findById(id);
@@ -234,8 +213,6 @@ export default class WantedController {
     if (!cpf) {
       return res.send({ message: "Erro nenhum dado preenchido" });
     }
-
-    
 
     try {
       const result = await Wanted.findOne({cpf: cpf});

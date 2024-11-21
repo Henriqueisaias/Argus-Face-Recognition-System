@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./Form.module.css";
+import styles from "./FacialSearch.module.css";
 import Wanted from "./Wanted";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ async function req(image, token) {
   
 }
 
-function Form() {
+function FacialSearch() {
   const [image, setImage] = useState(null);
   const [wanted, setWanted] = useState(null);
   const [imageName, setImageName] = useState("");
@@ -115,7 +115,7 @@ function Form() {
 
 
       {wanted && (
-        <div className={styles.results}>
+        <div className={styles.results} >
           <h2>Resultados do Reconhecimento</h2>
           <Wanted wanted={wanted} />
         </div>
@@ -124,4 +124,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default FacialSearch;

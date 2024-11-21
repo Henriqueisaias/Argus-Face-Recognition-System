@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-// Corrigindo CORS
+// Allow CORS
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 
 app.use("/users", UserRoutes);

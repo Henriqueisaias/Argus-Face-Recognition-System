@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// se der erro no schema é pq não fiz o import do schema com desetructuring
 const userSchema = new mongoose.Schema(
   {
     user: { type: String, required: true },
